@@ -2,11 +2,9 @@ package com.r3pi.rx;
 
 
 import rx.Observable;
-import rx.Observer;
 import rx.exceptions.OnErrorNotImplementedException;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
-import rx.schedulers.Schedulers;
 
 import java.util.Locale;
 
@@ -21,7 +19,8 @@ public class Main {
             System.out.println(integer);
         }, Throwable::printStackTrace);
 
-        // Connectable
+        // Connectable, common RxJava mistakes
+        // https://speakerdeck.com/dlew/common-rxjava-mistakes?slide=70
         ConnectableObservable<Long> autoConnectObservable = rxPlayground.getConnectableObservable();
 //        Observable<Long> autoConnectObservable = rxPlayground.getConnectableObservable().refCount();
 
@@ -49,10 +48,28 @@ public class Main {
         fixedMulticastObservable.subscribe(s -> System.out.println("Sub2 got: " + s));
 
         //Empty crash log
-        rxPlayground.getEmptyObservable().first()
-//                .subscribeOn(Schedulers.io())
-                .subscribe(o -> System.out.println(o),
-                        getDefaultErrorHandling());
+//        rxPlayground.getEmptyObservable().first()
+//                .subscribe(o -> System.out.println(o),
+//                        getDefaultErrorHandling());
+
+        // retry errors handling blog.danlew.net/2015/12/08/error-handling-in-rxjava/
+
+        //rxPlayground.getErrorPropagatedObservable().subscribe(System.out::println, getDefaultErrorHandling());
+
+        rxPlayground.getRetryTestGood().subscribe(s -> System.out.println("Retry returned: " + s),
+                getDefaultErrorHandling());
+
+        rxPlayground.getRetryTestBad().subscribe(s -> System.out.println("Bad Retry returned: " + s),
+                getDefaultErrorHandling());
+
+        // sleep just to see results of intervals in previous examples
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     private static Action1<Throwable> getDefaultErrorHandling() {
