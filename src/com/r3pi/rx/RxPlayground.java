@@ -4,6 +4,7 @@ import rx.Observable;
 import rx.exceptions.Exceptions;
 import rx.observables.ConnectableObservable;
 
+import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -100,6 +101,11 @@ public class RxPlayground {
 
     private String transform(String input) {
         return input + Integer.valueOf(input);
+    }
+
+    Observable<String> getIntervalStrings(int intervalMs) {
+        return Observable.interval(intervalMs, TimeUnit.MILLISECONDS)
+                .map(aLong -> Long.toString(aLong));
     }
 
 }
