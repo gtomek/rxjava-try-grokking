@@ -74,8 +74,6 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private static Action1<Throwable> getDefaultErrorHandling() {

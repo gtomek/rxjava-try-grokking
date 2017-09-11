@@ -3,6 +3,7 @@ package com.r3pi.rx;
 import rx.Observable;
 import rx.exceptions.Exceptions;
 import rx.observables.ConnectableObservable;
+import rx.subjects.BehaviorSubject;
 
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class RxPlayground {
 
     int myValue = 11;
+    BehaviorSubject behaviourSubject = BehaviorSubject.<Integer>create();
 
     Observable<Integer> getMyValueObservableFromCallble() {
         return Observable.fromCallable(() -> {
@@ -63,6 +65,9 @@ public class RxPlayground {
                 .onErrorReturn(error -> "Uh oh");
     }
 
+    Observable<Integer> getWithSubject() {
+        return behaviourSubject.startWith(Observable.empty());
+    }
 
     Observable<String> getRetryTestBad() {
         return Observable.interval(1, TimeUnit.SECONDS)
